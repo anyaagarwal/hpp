@@ -1,54 +1,102 @@
+var helicopterIMG, helicopterSprite,packageSprite;
+var packageBody,ground
 const Engine = Matter.Engine;
-const World= Matter.World;
+const World = Matter.World;
 const Bodies = Matter.Bodies;
+const Body = Matter.Body;
 
-var engine, world;
-
-function setup(){
-    var canvas = createCanvas(1200,600);
-    engine = Engine.create();
-    world = engine.world;
-
-    plane = new Rcx2(600,height,1200,40)
-    
-    stone = new Rcx3(700,320,277,100);
-    iron = new Rcx4(300,350);
-    rubber=new circle(900,450,170);
-    hammer = new Hitter(10,100);
-
-    rubber1 = new Rub(505,450,10);
-    rubber2 = new Rub(510,450,10);
-    rubber3 = new Rub(515,450,10);
-    rubber4 = new Rub(520,450,10);
-    rubber5 = new Rub(525,450,10);
-    rubber6 = new Rub(515,445,10);
-    rubber7 = new Rub(520,445,10);
-    rubber8 = new Rub(525,445,10);
-    rubber9 = new Rub(530,445,10);
-    rubber10 = new Rub(535,445,10);
-
-
-
+function preload()
+{
+	helicopterIMG=loadImage("helicopter.png")
+	pimage = loadImage("box.png");
 }
 
-function draw(){
-    background("pink");
-    Engine.update(engine);
+function setup() {
+	createCanvas(800, 700);
+	rectMode(CENTER);
 
-    stone.display();
-    plane.display();
-    iron.display();
-    rubber.display();
+	packageSprite=createSprite(width/2, 80, 10,10);
+	packageSprite.addImage(pimage)
+	packageSprite.scale=0.2;
 
-    hammer.display();
-    rubber1.display();
-    rubber2.display();
-    rubber3.display();
-    rubber4.display();
-    rubber5.display();
-    rubber6.display();
-    rubber7.display();
-    rubber8.display();
-    rubber9.display();
-    rubber10.display();
+	helicopterSprite=createSprite(width/2, 200, 10,10);
+	helicopterSprite.addImage(helicopterIMG)
+	helicopterSprite.scale=0.7;
+
+
+	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite.shapeColor=color(255)
+
+
+	engine = Engine.create();
+	world = engine.world;
+
+	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:0.4, isStatic:true}); 
+	World.add(world, packageBody);
+
+	//Create a Ground
+	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
+ 	World.add(world, ground);
+
+ 	boxPosition=width/2-100
+ 	boxY=610;
+
+ 	boxleftSprite=createSprite(boxPosition, boxY, 20,100);
+ 	boxleftSprite.shapeColor=color(255,0,0);
+
+ 	boxLeftBody = Bodies.rectangle(boxPosition+20, boxY, 20,100 , {isStatic:true} );
+ 	World.add(world, boxLeftBody);
+
+ 	boxBase=createSprite(boxPosition+100, boxY+40, 200,20);
+ 	boxBase.shapeColor=color(255,0,0);
+
+ 	boxBottomBody = Bodies.rectangle(boxPosition+100, boxY+45-20, 200,20 , {isStatic:true} );
+ 	World.add(world, boxBottomBody);
+
+ 	boxleftSprite=createSprite(boxPosition+200 , boxY, 20,100);
+ 	boxleftSprite.shapeColor=color(255,0,0);
+
+ 	boxRightBody = Bodies.rectangle(boxPosition+200-20 , boxY, 20,100 , {isStatic:true} );
+ 	World.add(world, boxRightBody);
+
+	
+	
+	Engine.run(engine);
+  
 }
+
+
+function draw() {
+  rectMode(CENTER);
+  Engine.update(engine);
+  background(0);
+
+  packageSprite.x= packageBody.position.x;
+  packageSprite.y= packageBody.position.y;
+
+  drawSprites();
+}
+
+function keyPressed(){
+    if (keyCode === RIGHT_ARROW) { 
+		helicopterSprite.x=helicopterSprite.x+20;
+		 translation={ x:20, y:0 } 
+		 Matter.Body.translate(packageBody, translation) 
+		}else if (keyCode === LEFT_ARROW) { 
+		helicopterSprite.x=helicopterSprite.x-20;
+		 translation={ x:-20, y:0 } 
+		 Matter.Body.translate(packageBody, translation) 
+		}else if(keyCode === DOWN_ARROW) {
+	  
+	  Matter.Body.setStatic(packageBody,false);
+  }
+}
+  
+
+  
+  
+  
+  
+  
+ 
+
